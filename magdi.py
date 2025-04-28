@@ -5,19 +5,7 @@ import plotly.express as px
 from scipy.stats import linregress
 import plotly.graph_objects as go
 from scipy.interpolate import interp1d
-st.title("TVD Calculator using Minimum Curvature Method")
-st.header("Upload Directional Survey Data")
-survey_file = st.file_uploader("Upload your directional survey data (Excel)", type=[ 'xlsx'])
-st.write(survey_file)
-if survey_file:
-     survey_data = pd.read_excel(survey_file)
-     st.write(survey_data)
-     well_names = survey_data["Well_Name"].unique()
-     st.write(well_names)
-     selected_well = st.sidebar.selectbox("Select Well Name", well_names)
-     st.write(selected_well)
-     survey_data_filtered= survey_data[survey_data["Well_Name"] == selected_well].reset_index(drop=True)
-     st.write(survey_data_filtered)
+
      # Function to calculate TVD using Minimum Curvature Method
 def calculate_tvd(data, rkb=0):
     data['TVD'] = 0.0 +rkb # Initialize TVD column
@@ -38,6 +26,20 @@ def calculate_tvd(data, rkb=0):
         data.loc[i, 'TVD'] = data.loc[i - 1, 'TVD'] + delta_tvd
         data['TVD'] = data['TVD']
     return data
-rkb= st.sidebar.number_input("Enter RKB (ft)", value=0.0, step=1.0)       
-tvd_calc = calculate_tvd(survey_data_filtered,rkb)
-st.write(survey_data_filtered)
+st.title("TVD Calculator using Minimum Curvature Method")
+st.header("Upload Directional Survey Data")
+survey_file = st.file_uploader("Upload your directional survey data (Excel)", type=[ 'xlsx'])
+st.write(survey_file)
+if survey_file:
+     survey_data = pd.read_excel(survey_file)
+     st.write(survey_data)
+     well_names = survey_data["Well_Name"].unique()
+     st.write(well_names)
+     selected_well = st.sidebar.selectbox("Select Well Name", well_names)
+     st.write(selected_well)
+     survey_data_filtered= survey_data[survey_data["Well_Name"] == selected_well].reset_index(drop=True)
+     st.write(survey_data_filtered)
+
+     rkb= st.sidebar.number_input("Enter RKB (ft)", value=0.0, step=1.0)       
+     tvd_calc = calculate_tvd(survey_data_filtered,rkb)
+     st.write(survey_data_filtered)
